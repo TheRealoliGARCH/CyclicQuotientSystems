@@ -11,8 +11,8 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 
-TITLE = "4. A Cross-Country Statistical and Econometric Analysis of Structural Relationships, Long-Run Dynamics, and Error Correction Using Cyclic Quotient Systems"
-AUTHORS = "Soumadeep Ghosh with ChatGPT (OpenAI)"
+TITLE = "A Cross-Country Statistical and Econometric Analysis of Structural Relationships, Long-Run Dynamics, and Error Correction Using Cyclic Quotient Systems"
+AUTHORS = "Lord Soumadeep Ghosh with ChatGPT (OpenAI)"
 PLACE = "Kolkata, India"
 COUNTRIES = [
 ("Austria","AUT"),("Australia","AUS"),("Belgium","BEL"),("Canada","CAN"),("Switzerland","CHE"),
@@ -33,7 +33,7 @@ IND = {"population":"SP.POP.TOTL","land_area_km2":"AG.LND.TOTL.K2",
 "gini_index":"SI.POV.GINI","real_gdp_per_capita_2015_usd":"NY.GDP.PCAP.KD",
 "total_real_gdp_2015_usd":"NY.GDP.MKTP.KD",
 "government_final_consumption_pct_gdp":"NE.CON.GOVT.ZS"}
-PDF = TITLE + ".pdf"
+PDF = "4. " + TITLE + ".pdf"
 
 def get_series(session, iso, code, start, end):
     url=f"https://api.worldbank.org/v2/country/{iso}/indicator/{code}"
@@ -77,7 +77,7 @@ def render(panel,cov,start,end,path):
     def P(x): return Paragraph(x,st["B"])
     story=[Paragraph(TITLE,st["T"]),Paragraph(AUTHORS,st["A"]),Paragraph(PLACE,st["A"]),Spacer(1,12)]
     sections=[
-("Abstract","This paper develops a reproducible cross-country statistical and econometric application of Cyclic Quotient Systems (CQS). It specifies graph-based quotient restrictions and a seven-variable panel for 60 economies over the selected period. Six World Bank indicators are observed and population density is derived. The paper distinguishes exact algebraic closure from stochastic measurement restrictions and from the econometric question of long-run equilibrium. Project diagnostics remain provisional: cointegration is specification-sensitive and robust panel-wide cointegration has not been established."),
+("Abstract","This paper develops a reproducible cross-country statistical and econometric application of Cyclic Quotient Systems (CQS). It specifies graph-based quotient restrictions and a seven-variable panel for 60 economies over the selected period. Six World Bank indicators are observed and population density is derived. The paper distinguishes exact algebraic closure from stochastic measurement restrictions and from the econometric question of long-run equilibrium. Project diagnostics remain provisional: cointegration is specification-sensitive and robust panel-wide cointegration has not been established. The paper ends with ''The End''"),
 ("1. Introduction","Cross-country panels combine heterogeneous national structures, common shocks, measurement differences, and incomplete observations. CQS provides a graph-based representation of relative quantities and cycle restrictions. Empirical content requires independent measurements and a falsifiable stochastic model; a quotient identity alone is not evidence of economic behaviour or causality."),
 ("2. Mathematical foundations","For a directed graph with vertex log-level vector z and incidence matrix B, log edge quotients satisfy r=Bz. If C is a cycle matrix, CB=0 and therefore Cr=0. With noisy observations r~=Bz+u, cycle residuals are s=Cr~=Cu. If edge-error covariance is Sigma, then Var(s)=C Sigma C-transpose. A covariance-aware statistic is Q=s-transpose (C Sigma C-transpose)^+ s. Its reference distribution depends on the specified error model and regularity conditions. For positive levels x_i on a closed cycle, q_i=x_i/x_(i+1) telescopes and product(q_i)=1; this is an algebraic identity."),
 ("3. Seven-variable framework","The variables are population, land area, population density (population divided by land area), Gini index, real GDP per capita in constant 2015 US dollars, total real GDP in constant 2015 US dollars, and general government final consumption expenditure as a percentage of GDP. The last indicator is not total government expenditure. There are six observed source indicators and one derived variable."),
@@ -102,6 +102,7 @@ def render(panel,cov,start,end,path):
       P("Pesaran, M. H. (2006). Estimation and inference in large heterogeneous panels with a multifactor error structure. Econometrica, 74(4), 967-1012."),
       P("Westerlund, J. (2007). Testing for error correction in panel data. Oxford Bulletin of Economics and Statistics, 69(6), 709-748."),
       P("World Bank. World Development Indicators. https://databank.worldbank.org/source/world-development-indicators")])
+    story.extend([Paragraph("The End",st["Heading1"])])
     SimpleDocTemplate(str(path),pagesize=A4,rightMargin=20*mm,leftMargin=20*mm,
       topMargin=18*mm,bottomMargin=18*mm,title=TITLE,author=AUTHORS).build(story)
 
