@@ -1,0 +1,8 @@
+variable,nonmissing,observations,coverage_pct
+population,1560,1560,100.0
+land_area_km2,1500,1560,96.15384615384616
+gini_index,839,1560,53.78205128205128
+real_gdp_per_capita_2015_usd,1533,1560,98.26923076923076
+total_real_gdp_2015_usd,1533,1560,98.26923076923076
+government_final_consumption_pct_gdp,1416,1560,90.76923076923077
+population_density_per_km2,1500,1560,96.15384615384616
