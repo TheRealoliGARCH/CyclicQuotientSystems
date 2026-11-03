@@ -1,98 +1,46 @@
 # Cyclic Quotient Systems
 
-This repository brings together a set of research notes and a reproducible empirical companion focused on cyclic quotient systems (CQS), noisy variants, and an applied G20 economic example.
-
-The project includes three PDF treatises and a Python script that downloads World Bank indicators to illustrate the logic behind a panel-based quotient construction.
+This repository contains the mathematical foundations, noisy extensions, and empirical applications of Cyclic Quotient Systems (CQS). The empirical paper is reproducible from one Python 3 entry point and one GitHub Actions workflow.
 
 ## Repository contents
 
-- `1. The Complete Treatise on Cyclic Quotient Systems.pdf`  
-  Foundational discussion of cyclic quotient systems and their formal structure.
+- The three existing PDF treatises (items 1–3) provide the theoretical and earlier empirical foundations.
+- `src/empirical_g20_cqs.py` is the earlier G20 illustration.
+- `scripts/generate_empirical_paper.py` downloads the 60-country panel, writes data audits, and generates the new paper.
+- `.github/workflows/generate-empirical-paper.yml` is the single workflow for paper generation.
+- `data/processed/` contains the generated raw-indicator snapshot, panel, and coverage audit.
+- The generated paper is saved in the repository root as:
+  `4. A Cross-Country Statistical and Econometric Analysis of Structural Relationships, Long-Run Dynamics, and Error Correction Using Cyclic Quotient Systems.pdf`
 
-- `2. The Complete Treatise on Applications of Noisy Cyclic Quotient Systems.pdf`  
-  Exploration of noisy versions and applied settings in which cycle closure or quotient identities are discussed under uncertainty.
+## Sample and variables
 
-- `3. Cyclic Quotient Systems in Empirical Economics.pdf`  
-  Applied treatment connecting the framework to economic data and empirical measurement.
+The fixed 60-country panel is encoded in the Python script. The seven variables are population, land area, population density (derived), Gini index, real GDP per capita (constant 2015 US dollars), total real GDP (constant 2015 US dollars), and general government final consumption expenditure (% GDP).
 
-- `src/empirical_g20_cqs.py`  
-  Reproducible Python workflow that downloads a G20 country-year panel from the World Bank API, constructs population density, inequality, and GDP measures, verifies the exact algebraic identity used in the example, and fits a descriptive panel model.
+Six observed World Bank WDI indicators are used: `SP.POP.TOTL`, `AG.LND.TOTL.K2`, `SI.POV.GINI`, `NY.GDP.PCAP.KD`, `NY.GDP.MKTP.KD`, and `NE.CON.GOVT.ZS`. The last is general government final consumption expenditure, not total government expenditure. Population density is derived from population and land area; thus the design has six observed indicators and one derived variable.
 
-- `LICENSE`  
-  Repository license information.
+## Reproduce locally
 
-## Project goals
-
-The repository sits at the intersection of:
-
-- formal mathematical reasoning about cyclic quotient constructions,
-- noisy or stochastic extensions of these ideas,
-- and empirical work showing how such structures can be represented in real-world data.
-
-At a high level, the project treats the quotient relationship as a consistency check or structural identity, while being careful to distinguish between:
-
-- an exact algebraic identity that closes by construction, and
-- a stronger empirical claim requiring independent data sources, measurement models, and appropriate uncertainty accounting.
-
-## Empirical companion script
-
-The script in `src/empirical_g20_cqs.py` provides a reproducible example based on nineteen sovereign G20 economies.
-
-It does the following:
-
-1. Downloads World Bank indicators for population, land area, Gini, and GDP per capita.
-2. Merges them into a country-year panel.
-3. Constructs population density and log-transformed variables.
-4. Checks the exact level-cycle identity used in the illustrative algebra.
-5. Fits a descriptive two-way fixed-effects panel regression with country-clustered standard errors.
-
-### Important methodological note
-
-The script explicitly documents that the constructed quotient product is an algebraic identity that closes by construction; it is not, by itself, evidence of a noisy-cycle phenomenon or a causal result. A meaningful noisy-cycle test would need independent edge estimates and the joint sampling or measurement-error covariance structure.
-
-## Requirements
-
-The script depends on Python packages such as:
-
-- pandas
-- requests
-- numpy
-- statsmodels
-
-Install them with:
+Requires Python 3.11+, pandas, requests, and reportlab.
 
 ```bash
-python -m pip install pandas requests statsmodels numpy
+python -m pip install pandas requests reportlab
+python scripts/generate_empirical_paper.py --start 2000 --end 2025
 ```
 
-## Run the example
+The script writes `data/processed/world_bank_indicators_long.csv`, `country_year_panel.csv`, and `variable_coverage.csv`, then renders the PDF in the repository root. Missing observations are retained; Gini values are not interpolated. Future World Bank revisions can change subsequent snapshots.
 
-From the repository root:
+## GitHub Actions
 
-```bash
-python src/empirical_g20_cqs.py --start 2000 --end 2023 --output-dir outputs
-```
+Run **Generate CQS Empirical Paper** from the Actions tab, or let it run when the generator/workflow changes on `main`. The workflow installs the same dependencies, executes the same script, and commits the PDF and data snapshot when outputs change. The implementation is Python-only and requires no R runtime or package.
 
-This creates an `outputs/` directory containing summary files including:
+## Interpretation and econometric cautions
 
-- `g20_world_bank_panel.csv`
-- `descriptive_statistics.csv`
-- `country_coverage.csv`
-- `data_and_cycle_summary.txt`
-- `panel_model.txt`
+For positive levels on a closed cycle, successive quotients telescope to one. This is an algebraic identity, not evidence of an economic relationship, cointegration, or causality. A noisy-cycle test requires independently measured edge quantities and an explicit joint measurement-error covariance model.
 
-## Notes on interpretation
+The candidate pair of log real GDP per capita and government final-consumption share remains provisional. Earlier Engle-Granger results were weak and specification-sensitive. A single exploratory Westerlund-style group-mean Gt rejection does not establish stable panel-wide cointegration; the custom Python implementation and synchronized block bootstrap are not claimed to be bit-for-bit equivalent to a canonical reference implementation. Preliminary Monte Carlo calibration showed selected null-size distortions, so equation-level verification and larger simulations remain necessary.
 
-This repository is best understood as a research archive and reproducibility bundle rather than a conventional software package. The intellectual focus is conceptual and analytical: it studies how quotient-like constructions behave under cyclic structure, when noisy extensions are relevant, and how such ideas can be translated into an empirical setup.
+Population density is mechanically derived; GDP per capita multiplied by population is a consistency diagnostic, not an exact independent identity with total GDP; Gini coverage is sparse and survey-method dependent; and government final consumption is narrower than total public expenditure. Cross-sectional dependence, structural breaks, heterogeneous slopes, short time dimension, and data revisions further constrain inference.
 
 ## License
 
-This repository includes a `LICENSE` file. Please review it before reusing the materials beyond the intended scholarly and research context.
-
-## Suggested citation
-
-If you use the material in academic work, cite the PDFs and the accompanying script as part of the same research corpus on cyclic quotient systems.
-
----
-
-The repository is intended to support exploration, reproducibility, and scholarly reading of the theory and its empirical companion.
+See `LICENSE` for the repository's license terms.
